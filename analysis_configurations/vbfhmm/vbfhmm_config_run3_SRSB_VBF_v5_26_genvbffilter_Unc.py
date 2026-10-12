@@ -345,6 +345,7 @@ def build_config(
                             "trigger_particle_id": 13,
                             "max_deltaR_triggermatch": 0.4,
                         },
+                    ],
                     ####
                     "2018": [
                         {
@@ -702,7 +703,7 @@ def build_config(
                     #"2024": '"Summer23BPixPrompt23_RunD_JRV1_MC"',
                     "2024": '"Summer24Prompt24_JRV1_MC"',
                     "2025": '"Summer24Prompt25_JRV2_MC"',
-                    "2026": '"Summer24Prompt26_JRV1_MC"',
+                    "2026": '"Summer24Prompt26_RunBD_JRV1_MC"',
                 }
             ),
             "jet_jes_tag_data":EraModifier(
@@ -786,7 +787,7 @@ def build_config(
                     "2023BPix": True,
                     "2024": True,
                     "2025": True,
-                    "2026": True,
+                    "2026": False,
                 }
             ),
             "jet_horn_eta_min": 2.5,
@@ -804,7 +805,7 @@ def build_config(
                     "2023BPix": True,
                     "2024": True,
                     "2025": True,
-                    "2026": True,
+                    "2026": False,
                 }
             ),
         },
@@ -1483,8 +1484,8 @@ def build_config(
         configuration.add_modification_rule(
             "global",
             AppendProducer(
-                #producers=[jets.JetEnergyCorrection_data_2025, event.JSONFilter,],
-                producers=[jets.JetEnergyCorrection_data_2024, event.JSONFilter,],
+                producers=[jets.JetEnergyCorrection_data_2025, event.JSONFilter,],
+                #producers=[jets.JetEnergyCorrection_data_2024, event.JSONFilter,],
                 samples=["data"],
                 update_output=False,
             ),

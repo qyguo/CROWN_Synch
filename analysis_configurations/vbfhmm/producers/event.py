@@ -1134,6 +1134,18 @@ HiggsToDiMuonPair_p4_KITBSC = Producer(
     output=[q.dimuon_p4_Higgs],
     scopes=["vbfhmm"],
 )
+HiggsToDiMuonPair_p4_BSC = Producer(
+    name="HiggsToDiMuonPair_p4_BSC",
+    call='physicsobject::HiggsToDiMuonPairCollection({df}, {output}, {input})',
+    input=[nanoAOD.Muon_bsConstrainedPt,
+           nanoAOD.Muon_eta,
+           nanoAOD.Muon_phi,
+           nanoAOD.Muon_mass,
+           q.dimuon_HiggsCand_collection],
+    output=[q.dimuon_p4_Higgs],
+    scopes=["vbfhmm"],
+)
+#
 HiggsToDiMuonPair_p4_4m = Producer(
     name="HiggsToDiMuonPair_p4_4m",
     call='physicsobject::HiggsToDiMuonPairCollection({df}, {output}, {input})',
@@ -1203,6 +1215,19 @@ Mask_DiMuonPair_KITBSC = Producer(
     output=[q.dimuon_HiggsCand_collection],
     scopes=["vbfhmm"],
 )
+Mask_DiMuonPair_BSC = Producer(
+    name="Mask_DiMuonPair_BSC",
+    call='physicsobject::HiggsCandDiMuonPairCollectionWithMassWindow({df}, {output}, {input}, {dimuon_mass_low}, {dimuon_mass_high})',
+    input=[nanoAOD.Muon_bsConstrainedPt,
+           nanoAOD.Muon_eta,
+           nanoAOD.Muon_phi,
+           nanoAOD.Muon_mass,
+           nanoAOD.Muon_charge,
+           q.good_muon_collection],
+    output=[q.dimuon_HiggsCand_collection],
+    scopes=["vbfhmm"],
+)
+#
 Mask_DiElectronPair = Producer(
     name="Mask_DiElectronPair",
     call='physicsobject::ZCandDiElectronPairCollection({df}, {output}, {input})',

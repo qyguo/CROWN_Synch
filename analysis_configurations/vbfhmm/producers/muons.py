@@ -22,6 +22,49 @@ Muon_pTErr_2 = Producer(
     scopes=["vbfhmm"],
 )
 
+Muon_charge_1 = Producer(
+    name="Muon_charge_1",
+    call="quantities::ptErr({df}, {output}, 0, {input})",
+    input=[q.dimuon_HiggsCand_collection, nanoAOD.Muon_charge],
+    output=[q.mu1_fromH_charge],
+    scopes=["vbfhmm"],
+)
+Muon_charge_2 = Producer(
+    name="Muon_charge_2",
+    call="quantities::ptErr({df}, {output}, 1, {input})",
+    input=[q.dimuon_HiggsCand_collection, nanoAOD.Muon_charge],
+    output=[q.mu2_fromH_charge],
+    scopes=["vbfhmm"],
+)
+Muon_id_1 = Producer(
+    name="Muon_id_1",
+    call="quantities::ptErr({df}, {output}, 0, {input})",
+    input=[q.dimuon_HiggsCand_collection, nanoAOD.Muon_mediumId],
+    output=[q.mu1_fromH_id],
+    scopes=["vbfhmm"],
+)
+Muon_id_2 = Producer(
+    name="Muon_id_2",
+    call="quantities::ptErr({df}, {output}, 1, {input})",
+    input=[q.dimuon_HiggsCand_collection, nanoAOD.Muon_mediumId],
+    output=[q.mu2_fromH_id],
+    scopes=["vbfhmm"],
+)
+Muon_iso_1 = Producer(
+    name="Muon_iso_1",
+    call="quantities::ptErr({df}, {output}, 0, {input})",
+    input=[q.dimuon_HiggsCand_collection, nanoAOD.Muon_pfRelIso04_all],
+    output=[q.mu1_fromH_iso],
+    scopes=["vbfhmm"],
+)
+Muon_iso_2 = Producer(
+    name="Muon_iso_2",
+    call="quantities::ptErr({df}, {output}, 1, {input})",
+    input=[q.dimuon_HiggsCand_collection, nanoAOD.Muon_pfRelIso04_all],
+    output=[q.mu2_fromH_iso],
+    scopes=["vbfhmm"],
+)
+
 Muon_bsConstrainedChi2_1 = Producer(
     name="Muon_bsConstrainedChi2_1",
     call="quantities::ptErr({df}, {output}, 0, {input})",
