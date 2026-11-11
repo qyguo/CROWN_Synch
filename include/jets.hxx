@@ -41,6 +41,14 @@ ROOT::RDF::RNode OrderJetsByPt(ROOT::RDF::RNode df,
                                const std::string &output_col,
                                const std::string &jet_pt,
                                const std::string &jetmask_name);
+// Store original jet indices, mjj, absolute delta eta and an independent VBF flag.
+ROOT::RDF::RNode DijetSelection(ROOT::RDF::RNode df,
+    const std::string &index1, const std::string &index2,
+    const std::string &mjj, const std::string &deta, const std::string &flag,
+    const std::string &collection, const std::string &pt,
+    const std::string &eta, const std::string &phi, const std::string &mass,
+    bool maximum_mass, float min_mass, float min_deta,
+    float min_leading_pt, float min_subleading_pt);
 } // end namespace jet
 
 namespace physicsobject {

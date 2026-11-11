@@ -905,3 +905,23 @@ DiJetEta = Producer(
 #    output=[q.nSoftJet5],
 #    scopes=["global","vbfhmm"],
 #)
+
+# Evaluate the chosen pair without filtering events or changing legacy jets.
+LeadingDijetSelection = Producer(
+    name="LeadingDijetSelection",
+    call="jet::DijetSelection({df}, {output}, {input}, false, {vbf_min_mjj}, {vbf_min_deta}, {vbf_min_leading_pt}, {vbf_min_subleading_pt})",
+    input=[q.good_jet_collection, q.Jet_pt_corrected, nanoAOD.Jet_eta,
+           nanoAOD.Jet_phi, q.Jet_mass_corrected],
+    output=[q.vbf_leading_index_1, q.vbf_leading_index_2, q.mjj_leading, q.deta_jj_leading, q.is_vbf_leading],
+    scopes=["vbfhmm"],
+)
+
+# Evaluate the chosen pair without filtering events or changing legacy jets.
+MaxMjjDijetSelection = Producer(
+    name="MaxMjjDijetSelection",
+    call="jet::DijetSelection({df}, {output}, {input}, true, {vbf_min_mjj}, {vbf_min_deta}, {vbf_min_leading_pt}, {vbf_min_subleading_pt})",
+    input=[q.good_jet_collection, q.Jet_pt_corrected, nanoAOD.Jet_eta,
+           nanoAOD.Jet_phi, q.Jet_mass_corrected],
+    output=[q.vbf_maxmjj_index_1, q.vbf_maxmjj_index_2, q.mjj_max, q.deta_jj_maxmjj, q.is_vbf_maxmjj],
+    scopes=["vbfhmm"],
+)

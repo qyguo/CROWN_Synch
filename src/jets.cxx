@@ -31,13 +31,14 @@ Calculate_JetMass(ROOT::RDF::RNode df, const std::string &outputname,
                                const ROOT::RVec<float> &particle_phis,
                                const ROOT::RVec<float> &particle_masses,
                                const ROOT::RVec<int> &goodjets_index) {
+                                 if (goodjets_index.size() < 2) return static_cast<double>(default_float);
                                  std::vector<ROOT::Math::PtEtaPhiMVector> p4;
                                  for (unsigned int k = 0; k < 2; ++k) {
                                     try {
-                                        p4.push_back(ROOT::Math::PtEtaPhiMVector(particle_pts.at(goodjets_index[k]), 
-                                                                         particle_etas.at(goodjets_index[k]),
-                                                                         particle_phis.at(goodjets_index[k]),
-                                                                         particle_masses.at(goodjets_index[k])));
+                                        p4.push_back(ROOT::Math::PtEtaPhiMVector(particle_pts.at(goodjets_index.at(k)),
+                                                                         particle_etas.at(goodjets_index.at(k)),
+                                                                         particle_phis.at(goodjets_index.at(k)),
+                                                                         particle_masses.at(goodjets_index.at(k))));
                                     } catch (const std::out_of_range &e) {
                                         p4.push_back(ROOT::Math::PtEtaPhiMVector(default_float, default_float,default_float, default_float));
                                     }
@@ -62,10 +63,11 @@ Calculate_JetDeltaEta(ROOT::RDF::RNode df, const std::string &outputname,
                                const ROOT::RVec<float> &particle_phis,
                                const ROOT::RVec<float> &particle_masses,
                                const ROOT::RVec<int> &goodjets_index) {
+                                 if (goodjets_index.size() < 2) return static_cast<float>(default_float);
                                  std::vector<float> etas;
                                  for (unsigned int k = 0; k < 2; ++k) {
                                     try {
-                                        etas.push_back(particle_etas.at(goodjets_index[k]));
+                                        etas.push_back(particle_etas.at(goodjets_index.at(k)));
                                     } catch (const std::out_of_range &e) {
                                         etas.push_back(default_float);
                                     }
