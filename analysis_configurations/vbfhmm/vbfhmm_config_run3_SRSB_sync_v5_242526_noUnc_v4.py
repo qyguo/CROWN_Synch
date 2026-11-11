@@ -1497,6 +1497,14 @@ def build_config(
 
     # Pileup uncertainties: produce and store variations only for MC.
     if sample != "data":
+        # Parameters are scope-local; the variation producers run in vbfhmm.
+        configuration.add_config_parameters(
+            "vbfhmm",
+            {
+                key: configuration.config_parameters["global"][key]
+                for key in ("PU_reweighting_file", "PU_reweighting_era")
+            },
+        )
         configuration.add_modification_rule(
             "vbfhmm",
             AppendProducer(
