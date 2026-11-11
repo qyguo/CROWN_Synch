@@ -1031,7 +1031,7 @@ def build_config(
             "vbf_min_mjj": 400.0,
             "vbf_min_deta": 2.5,  # absolute delta eta >= 2.5, matching Python VBF
             "vbf_min_leading_pt": 35.0,
-            "vbf_min_subleading_pt": 30.0,
+            "vbf_min_subleading_pt": 25.0,
             "vbf_njets" : 2,
             "lead_jet_pt" : 35, #lead jet pt > 35
             "sublead_jet_pt" : 25, #sublead jet pt > 25
