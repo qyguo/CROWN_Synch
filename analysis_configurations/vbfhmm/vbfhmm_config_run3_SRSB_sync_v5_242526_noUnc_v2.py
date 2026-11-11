@@ -1,5 +1,4 @@
 from __future__ import annotations  # needed for type annotations in > python 3.7
-from .producers import muon_stages
 
 from typing import List
 
@@ -452,7 +451,7 @@ def build_config(
     configuration.add_config_parameters(
         ["global","gghmm","vbfhmm","e2m","m2m","eemm","mmmm","nnmm","fjmm","nnmm_dycontrol","nnmm_topcontrol"],
         {
-            "min_muon_pt": 20, # Applied after BSC + KIT + FSR
+            "min_muon_pt": 20, # ggh, vbf
             "max_muon_eta": 2.4, # ggh, vbf
             "muon_id": "Muon_mediumId", # ggh, vbf cut-based atm https://twiki.cern.ch/twiki/bin/viewauth/CMS/SWGuideMuonIdRun2#Medium_Muon
             "muon_iso_cut": 0.25, # ggh, vbf PFIsoLoose dR=0.4 https://twiki.cern.ch/twiki/bin/viewauth/CMS/SWGuideMuonIdRun2#Particle_Flow_isolation
@@ -519,7 +518,6 @@ def build_config(
                     "2026": "data/jsonpog-integration/POG/MUO/2025_Summer25/muon_Z.json.gz",
                 }
             ),
-            "muon_trigger_sf_name": "NUM_IsoMu24_DEN_CutBasedIdTight_and_PFIsoTight",
             "muon_id_sf_name": "NUM_MediumID_DEN_TrackerMuons",
             #"muon_iso_sf_name": "NUM_TightRelIso_DEN_MediumID",
             "muon_iso_sf_name": EraModifier(
@@ -632,7 +630,7 @@ def build_config(
     configuration.add_config_parameters(
         "global",
         {
-            "min_jet_pt": 25, # Cut on newly JEC/JER-corrected jet pT
+            "min_jet_pt": 25, # vh
             "max_jet_eta": 4.7, # vh
             # "jet_id": 2,  # default: 2==pass tight ID and fail tightLepVeto
             "jet_id": EraModifier(
@@ -1020,7 +1018,7 @@ def build_config(
         ["vbfhmm"],
         {
             "vbf_nmuons" : 2,
-            "dimuon_mass_low": 50.0, # BSC + KIT + FSR dimuon mass
+            "dimuon_mass_low": 50.0,
             "dimuon_mass_high": 200.0,
             "flag_DiMuonFromHiggs" : 1,
             "flag_LeptonChargeSumVeto" : 2, # sum lepton charge = 0
@@ -1056,18 +1054,6 @@ def build_config(
         },
     )
     """
-    # Select the correction before constructing any corrected-pT jet masks.
-    jet_correction = jets.JetEnergyCorrection_2022_v15_v3
-    if sample == "data":
-        if era in ("2022", "2022EE", "2023", "2023BPix"):
-            jet_correction = jets.JetEnergyCorrection_data_2022
-        elif era == "2024":
-            jet_correction = jets.JetEnergyCorrection_data_2024
-        elif era in ("2025", "2026"):
-            jet_correction = jets.JetEnergyCorrection_data_2025
-        else:
-            raise ValueError(f"No data JEC configured for era {era}")
-
     configuration.add_producers(
         "global",
         [
@@ -1076,7 +1062,6 @@ def build_config(
             #event.PrefireWeight,
             event.Lumi,
             event.MetFilter,
-            event.applyMuonScaReBSCPrePair,
             muons.BaseMuons, # vh
             # vbfhmm muon Rochester corr, FSR recovery added 
             # GeoFit? TODO
@@ -1085,7 +1070,7 @@ def build_config(
             #jets.JetEnergyCorrection_2022, # include pt corr and mass corr and 2022 modify the JR sf adding pt
             # jets.JetEnergyCorrection_2022_v15, # include pt corr and mass corr and 2022 modify the JR sf adding pt
             # jet correction additional modification of pt<30 GeV of |eta| in (2,2.5)region.
-            jet_correction, # JEC/JER first; GoodJets then applies corrected pT > 25 GeV
+            jets.JetEnergyCorrection_2022_v15_v3, # include pt corr and mass corr and 2022 modify the JR sf adding pt
             #jets.JetEnergyCorrection_2022_GenMatch, # include pt corr and mass corr and 2022 modify the JR sf adding pt
             #jets.GoodJets, # vh overlap removal with ?base? muons done [need validation]
             #jets.GoodJets_2022, # vh overlap removal with ?base? muons done [need validation]
@@ -1149,11 +1134,12 @@ def build_config(
             event.FilterNMuons_OverE2, # vbfhmm >= 2 muons
             muons.MuonCollection, # collect ordered by pt
             ###
+            event.applyMuonScaReBSCPrePair,
             #event.Mask_DiMuonPair_KITBSC, # dimuonHiggs index based on KIT-BSC corrected pt
-            event.Mask_DiMuonPair_BSC, # pair selected using BSC + KIT + FSR kinematics
+            event.Mask_DiMuonPair_BSC, # dimuonHiggs index based on BSC corrected pt
             event.Flag_DiMuonFromHiggs,
             #event.HiggsToDiMuonPair_p4_KITBSC, # select the dimuon pairs in [low,high] and order by KIT-BSC pt
-            event.HiggsToDiMuonPair_p4_BSC, # reconstruct with BSC + KIT + FSR kinematics
+            event.HiggsToDiMuonPair_p4_BSC, # select the dimuon pairs in [low,high] and order by BSC pt
             ###
             event.DiMuonMassFromZVeto,# has dimuon from Z return mask equal to 0, otherwise return 1
             ##event.VetoVHElectron,
@@ -1179,8 +1165,6 @@ def build_config(
             ###
             muons.Mu1_H_KITBSC,
             muons.Mu2_H_KITBSC,
-            triggers.HiggsMuonIsoMu24Matches,
-            triggers.IsoMu24Counts, # Keep trigger-failing offline events for denominators.
             ###
             event.mumuH_dR,
             ###
@@ -1209,7 +1193,6 @@ def build_config(
             p4.genmet_phi,
 
             scalefactors.btagging_SF,
-            scalefactors.MuonIsoMu24SF,
             scalefactors.MuonIDIso_SF_vbfhmm_noYear, #2 mu from H
             event.MuonScaReBSCSelected,
             fsrPhoton.muon_fsrPhotonIdx_1,
@@ -1226,9 +1209,6 @@ def build_config(
             fsrPhoton.muon_fsrPhoton_dROverEt2_2,
             fsrPhoton.muon_fsrPhoton_relIso03_2,
 #
-            muon_stages.StageKinematics,
-            muons.Muon_index_1,
-            muons.Muon_index_2,
             muons.Muon_pTErr_1,
             muons.Muon_pTErr_2,
             muons.Muon_charge_1,
@@ -1288,8 +1268,18 @@ def build_config(
     configuration.add_outputs(
         ["vbfhmm","e2m","m2m","eemm","mmmm","nnmm","fjmm"],
         [
+            q.mu1_fromH_pt,
+            q.mu1_fromH_eta,
+            q.mu1_fromH_phi,
 
+            q.mu2_fromH_pt,
+            q.mu2_fromH_eta,
+            q.mu2_fromH_phi,
             
+            q.H_pt,
+            q.H_eta,
+            q.H_phi,
+            q.H_mass,
 
         ],
     )
@@ -1343,66 +1333,6 @@ def build_config(
             q.iso_wgt_mu_1,
             q.id_wgt_mu_2,
             q.iso_wgt_mu_2,
-            q.mu1_rawpT,
-            q.mu1_raw_eta,
-            q.mu1_raw_phi,
-            q.mu1_raw_mass,
-            q.mu2_rawpT,
-            q.mu2_raw_eta,
-            q.mu2_raw_phi,
-            q.mu2_raw_mass,
-            q.dimuon_rawpT,
-            q.dimuon_raw_eta,
-            q.dimuon_raw_phi,
-            q.dimuon_raw_mass,
-            q.mu1_bsc_pt,
-            q.mu1_bsc_eta,
-            q.mu1_bsc_phi,
-            q.mu1_bsc_mass,
-            q.mu2_bsc_pt,
-            q.mu2_bsc_eta,
-            q.mu2_bsc_phi,
-            q.mu2_bsc_mass,
-            q.dimuon_bsc_pt,
-            q.dimuon_bsc_eta,
-            q.dimuon_bsc_phi,
-            q.dimuon_bsc_mass,
-            q.mu1_kit_bsc_pt,
-            q.mu1_kit_bsc_eta,
-            q.mu1_kit_bsc_phi,
-            q.mu1_kit_bsc_mass,
-            q.mu2_kit_bsc_pt,
-            q.mu2_kit_bsc_eta,
-            q.mu2_kit_bsc_phi,
-            q.mu2_kit_bsc_mass,
-            q.dimuon_kit_bsc_pt,
-            q.dimuon_kit_bsc_eta,
-            q.dimuon_kit_bsc_phi,
-            q.dimuon_kit_bsc_mass,
-            q.mu1_fsr_kit_bsc_pt,
-            q.mu1_fsr_kit_bsc_eta,
-            q.mu1_fsr_kit_bsc_phi,
-            q.mu1_fsr_kit_bsc_mass,
-            q.mu2_fsr_kit_bsc_pt,
-            q.mu2_fsr_kit_bsc_eta,
-            q.mu2_fsr_kit_bsc_phi,
-            q.mu2_fsr_kit_bsc_mass,
-            q.dimuon_fsr_kit_bsc_pt,
-            q.dimuon_fsr_kit_bsc_eta,
-            q.dimuon_fsr_kit_bsc_phi,
-            q.dimuon_fsr_kit_bsc_mass,
-            q.IsoMu24_event_total,
-            q.IsoMu24_event_pass,
-            q.mu1_IsoMu24_total,
-            q.mu1_IsoMu24_pass,
-            q.mu2_IsoMu24_total,
-            q.mu2_IsoMu24_pass,
-            q.mu1_IsoMu24_matched,
-            q.mu2_IsoMu24_matched,
-            q.mu1_IsoMu24_sf,
-            q.mu2_IsoMu24_sf,
-            q.mu1_fromH_index,
-            q.mu2_fromH_index,
             q.mu1_fromH_ptErr,
             q.mu2_fromH_ptErr,
             q.mu1_fromH_charge,
@@ -1418,6 +1348,8 @@ def build_config(
             q.mu1_fromH_bsConstrainedPtErr,
             q.mu2_fromH_bsConstrainedPtErr,
 
+            q.pt_kit_bsc_1,
+            q.pt_kit_bsc_2,
             q.ptErr_kit_bsc_1,
             q.ptErr_kit_bsc_2,
             # fsr
@@ -1476,37 +1408,11 @@ def build_config(
             ],
         )
 
-    # Pileup uncertainties: produce and store variations only for MC.
-    if sample != "data":
-        configuration.add_modification_rule(
-            "vbfhmm",
-            AppendProducer(
-                producers=[event.PUweights_up, event.PUweights_down],
-                samples=sample,
-                update_output=False,
-            ),
-        )
-        configuration.add_outputs(
-            "vbfhmm",
-            [q.puweight_up, q.puweight_down],
-        )
-
-    # Preserve LHE members for bin-level PDF/scale prescriptions (MC only).
-    if sample != "data":
-        configuration.add_producers("vbfhmm", [
-            syst.StoreLHE_pdf, syst.StoreLHE_scale,
-            syst.QCDScaleUpStored, syst.QCDScaleDownStored,
-        ])
-        configuration.add_outputs("vbfhmm", [
-            q.LHE_pdf_weights, q.LHE_scale_weights,
-            q.qcd_unc_up, q.qcd_unc_down,
-        ])
-
     # all data
     configuration.add_modification_rule(
         "global",
         RemoveProducer(
-            producers=[event.PUweights, met.BuildGenMetVector,],
+            producers=[event.PUweights, jets.JetEnergyCorrection_2022_v15_v3, met.BuildGenMetVector,],
             samples=["data"],
         ),
     )
@@ -1517,7 +1423,7 @@ def build_config(
             "global",
             AppendProducer(
                 #jetvetomap
-                producers=[event.JSONFilter,],
+                producers=[jets.JetEnergyCorrection_data_2022, event.JSONFilter,],
                 samples=["data"],
                 update_output=False,
             ),
@@ -1526,7 +1432,7 @@ def build_config(
         configuration.add_modification_rule(
             "global",
             AppendProducer(
-                producers=[event.JSONFilter,],
+                producers=[jets.JetEnergyCorrection_data_2024, event.JSONFilter,],
                 samples=["data"],
                 update_output=False,
             ),
@@ -1535,8 +1441,8 @@ def build_config(
         configuration.add_modification_rule(
             "global",
             AppendProducer(
-                producers=[event.JSONFilter,],
-                #producers=[event.JSONFilter,],
+                producers=[jets.JetEnergyCorrection_data_2025, event.JSONFilter,],
+                #producers=[jets.JetEnergyCorrection_data_2024, event.JSONFilter,],
                 samples=["data"],
                 update_output=False,
             ),
@@ -1571,8 +1477,7 @@ def build_config(
                 p4.genmu2_fromH_mass,
                 jets.GEN_GoodJets,
                 jets.NumberOfGoodGENJets,
-                scalefactors.MuonIsoMu24SF,
-            scalefactors.MuonIDIso_SF_vbfhmm_noYear,
+                scalefactors.MuonIDIso_SF_vbfhmm_noYear,
                 scalefactors.btagging_SF,
             ],
             samples=["data"],
