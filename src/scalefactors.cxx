@@ -12,6 +12,18 @@
 /// namespace used for scale factor related functions
 namespace scalefactor {
 namespace muon {
+// Per-muon IsoMu24 SF. No SF is applied below the trigger plateau.
+ROOT::RDF::RNode isomu24(ROOT::RDF::RNode df, const std::string &pt,
+ const std::string &eta, const std::string &out, const std::string &file,
+ const std::string &key) {
+ auto correction = correction::CorrectionSet::from_file(file)->at(key);
+ return df.Define(out, [correction](const float &p, const float &e) {
+   if (!std::isfinite(p) || !std::isfinite(e) || p < 26.f || std::abs(e) >= 2.4f)
+     return 1.0;
+   return correction->evaluate({std::abs(e), static_cast<double>(p), std::string("nominal")});
+ }, {pt, eta});
+}
+
 /**
  * @brief Function used to evaluate id scale factors from muons
  *

@@ -15,6 +15,31 @@
 enum Channel { MT = 0, ET = 1, TT = 2, EM = 3 };
 
 namespace basefunctions {
+// Preserve original LHE members; missing branches become empty vectors.
+inline ROOT::RDF::RNode StoreTheoryWeights(ROOT::RDF::RNode df,
+ const std::string &out, const std::string &source) {
+ const auto columns = df.GetColumnNames();
+ if (std::find(columns.begin(), columns.end(), source) == columns.end())
+   return df.Define(out, []() { return ROOT::RVec<float>{}; });
+ return df.Define(out, [](const ROOT::RVec<float> &w) { return w; }, {source});
+}
+
+inline ROOT::RDF::RNode TriggerPassCount(ROOT::RDF::RNode df,
+ const std::string &out, const std::string &first, const std::string &second) {
+ return df.Define(out, [](bool a, bool b) { return int(a || b); }, {first, second});
+}
+
+
+// Preserve the original NanoAOD index in the final candidate order.
+inline ROOT::RDF::RNode CollectionIndex(ROOT::RDF::RNode df,
+                                      const std::string &outputname,
+                                      const std::string &collection,
+                                      int position) {
+    return df.Define(outputname,
+                     [position](const ROOT::RVec<int> &indices) {
+                         return indices.at(position, -1);
+                     }, {collection});
+}
 
 // vh extension
 /// Require events with its quantity to be "?" to the threshold

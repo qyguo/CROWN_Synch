@@ -359,24 +359,27 @@ ROOT::RDF::RNode LHEscale(ROOT::RDF::RNode df,
                             const std::string &lhe_scale_weights,
                             const std::string &variation) {
     
+    if (variation != "up" && variation != "down" && variation != "nominal")
+        throw std::runtime_error("Invalid LHE scale variation");
     auto lhe_scale_weights_lambda =
-        [variation](const ROOT::RVec<float> scale_weights) {
-            // now find the index
-            constexpr int idx[7] = {0, 1, 3, 4, 6, 7};
-            if (variation == "up") {
-                float maxv = 1.0f;
-                for (int i = 0; i < 6; ++i) {
-                    maxv = std::max(maxv, scale_weights[idx[i]]);
-                }
-                return maxv;
+        [variation](const ROOT::RVec<float> &weights) {
+            if (variation == "nominal" || weights.empty()) return 1.0f;
+            const bool nine = weights.size() == 9;
+            if (!nine && weights.size() != 8)
+                throw std::runtime_error("Expected 8 or 9 standard LHE scale weights");
+            // muR/muF grid: omit the two antipodal variations.
+            const int indices9[] = {0, 1, 3, 5, 7, 8};
+            const int indices8[] = {0, 1, 3, 4, 6, 7};
+            const float central = nine ? weights.at(4) : 1.0f;
+            if (!std::isfinite(central) || central == 0.0f)
+                throw std::runtime_error("Invalid central LHE scale weight");
+            float result = 1.0f;
+            for (int i = 0; i < 6; ++i) {
+                const float ratio = weights.at(nine ? indices9[i] : indices8[i]) / central;
+                if (!std::isfinite(ratio)) throw std::runtime_error("Nonfinite LHE scale weight");
+                result = variation == "up" ? std::max(result, ratio) : std::min(result, ratio);
             }
-            else if (variation == "down") {
-                float minv = 1.0f;
-                for (int i = 0; i < 6; ++i) {
-                    minv = std::min(minv, scale_weights[idx[i]]);
-                }
-                return minv;
-            }
+            return result;
         };
     auto df1 =
         df.Define(outputname, lhe_scale_weights_lambda, {lhe_scale_weights});

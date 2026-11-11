@@ -74,3 +74,35 @@ GenerateSingleMuonTriggerFlagsForQuadMuChannel = ExtendedVectorProducer(
     scope=["mmmm"],
     vec_config="singlemuon_trigger",
 )
+
+from code_generation.producer import Producer, ProducerGroup
+
+Muon1IsoMu24Match = Producer(
+    name="Muon1IsoMu24Match",
+    call='trigger::GenerateDoubleTriggerORFlag_2022({df}, {output}, {input}, "HLT_IsoMu24", 26., 26., 2.5, 2.5, 13, 13, 3, 3, 0.4)',
+    input=[q.muon_leadingp4_H, q.muon_leadingp4_H,
+           nanoAOD.TriggerObject_bit, nanoAOD.TriggerObject_id,
+           nanoAOD.TriggerObject_pt, nanoAOD.TriggerObject_eta, nanoAOD.TriggerObject_phi],
+    output=[q.mu1_IsoMu24_matched], scopes=["vbfhmm"],
+)
+
+Muon2IsoMu24Match = Producer(
+    name="Muon2IsoMu24Match",
+    call='trigger::GenerateDoubleTriggerORFlag_2022({df}, {output}, {input}, "HLT_IsoMu24", 26., 26., 2.5, 2.5, 13, 13, 3, 3, 0.4)',
+    input=[q.muon_subleadingp4_H, q.muon_subleadingp4_H,
+           nanoAOD.TriggerObject_bit, nanoAOD.TriggerObject_id,
+           nanoAOD.TriggerObject_pt, nanoAOD.TriggerObject_eta, nanoAOD.TriggerObject_phi],
+    output=[q.mu2_IsoMu24_matched], scopes=["vbfhmm"],
+)
+
+HiggsMuonIsoMu24Matches = ProducerGroup(name="HiggsMuonIsoMu24Matches", call=None, input=None, output=None, scopes=["vbfhmm"], subproducers=[Muon1IsoMu24Match, Muon2IsoMu24Match])
+
+_count_producers = []
+_count_producers.append(Producer(name="IsoMu24_event_total", call='basefunctions::DefineQuantity({df}, {output}, 1)', input=[], output=[q.IsoMu24_event_total], scopes=["vbfhmm"]))
+_count_producers.append(Producer(name="IsoMu24_event_pass", call='basefunctions::TriggerPassCount({df}, {output}, {input})', input=[q.mu1_IsoMu24_matched, q.mu2_IsoMu24_matched], output=[q.IsoMu24_event_pass], scopes=["vbfhmm"]))
+_count_producers.append(Producer(name="mu1_IsoMu24_total", call='basefunctions::DefineQuantity({df}, {output}, 1)', input=[], output=[q.mu1_IsoMu24_total], scopes=["vbfhmm"]))
+_count_producers.append(Producer(name="mu1_IsoMu24_pass", call='basefunctions::TriggerPassCount({df}, {output}, {input})', input=[q.mu1_IsoMu24_matched, q.mu1_IsoMu24_matched], output=[q.mu1_IsoMu24_pass], scopes=["vbfhmm"]))
+_count_producers.append(Producer(name="mu2_IsoMu24_total", call='basefunctions::DefineQuantity({df}, {output}, 1)', input=[], output=[q.mu2_IsoMu24_total], scopes=["vbfhmm"]))
+_count_producers.append(Producer(name="mu2_IsoMu24_pass", call='basefunctions::TriggerPassCount({df}, {output}, {input})', input=[q.mu2_IsoMu24_matched, q.mu2_IsoMu24_matched], output=[q.mu2_IsoMu24_pass], scopes=["vbfhmm"]))
+
+IsoMu24Counts = ProducerGroup(name="IsoMu24Counts", call=None, input=None, output=None, scopes=["vbfhmm"], subproducers=_count_producers)

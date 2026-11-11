@@ -9,7 +9,7 @@ from code_generation.producer import Producer, ProducerGroup
 Muon_pTErr_1 = Producer(
     name="Muon_pTErr_1",
     call="quantities::ptErr({df}, {output}, 0, {input})",
-    input=[q.dimuon_HiggsCand_collection, nanoAOD.Muon_ptErr],
+    input=[q.dimuon_HiggsCand_collection, q.Muon_ptErr_bsc_or_nominal],
     output=[q.mu1_fromH_ptErr],
     scopes=["vbfhmm"],
 )
@@ -17,21 +17,21 @@ Muon_pTErr_1 = Producer(
 Muon_pTErr_2 = Producer(
     name="Muon_pTErr_2",
     call="quantities::ptErr({df}, {output}, 1, {input})",
-    input=[q.dimuon_HiggsCand_collection, nanoAOD.Muon_ptErr],
+    input=[q.dimuon_HiggsCand_collection, q.Muon_ptErr_bsc_or_nominal],
     output=[q.mu2_fromH_ptErr],
     scopes=["vbfhmm"],
 )
 
 Muon_charge_1 = Producer(
     name="Muon_charge_1",
-    call="quantities::ptErr({df}, {output}, 0, {input})",
+    call="quantities::charge({df}, {output}, 0, {input})",
     input=[q.dimuon_HiggsCand_collection, nanoAOD.Muon_charge],
     output=[q.mu1_fromH_charge],
     scopes=["vbfhmm"],
 )
 Muon_charge_2 = Producer(
     name="Muon_charge_2",
-    call="quantities::ptErr({df}, {output}, 1, {input})",
+    call="quantities::charge({df}, {output}, 1, {input})",
     input=[q.dimuon_HiggsCand_collection, nanoAOD.Muon_charge],
     output=[q.mu2_fromH_charge],
     scopes=["vbfhmm"],
@@ -117,14 +117,14 @@ Muon_bsConstrainedPtErr_2 = Producer(
 MuonPtCut = Producer(
     name="MuonPtCut",
     call="physicsobject::CutPt({df}, {input}, {output}, {min_muon_pt})",
-    input=[nanoAOD.Muon_pt],
+    input=[q.Muon_pt_corrected],
     output=[],
     scopes=["global","gghmm","vbfhmm"],
 )
 MuonEtaCut = Producer(
     name="MuonEtaCut",
     call="physicsobject::CutEta({df}, {input}, {output}, {max_muon_eta})",
-    input=[nanoAOD.Muon_eta],
+    input=[q.Muon_eta_corrected],
     output=[],
     scopes=["global","gghmm","vbfhmm"],
 )
@@ -202,14 +202,14 @@ BaseMuons = ProducerGroup(
 GoodMuonPtCut = Producer(
     name="GoodMuonPtCut",
     call="physicsobject::CutPt({df}, {input}, {output}, {min_muon_pt})",
-    input=[nanoAOD.Muon_pt],
+    input=[q.Muon_pt_corrected],
     output=[],
     scopes=["gghmm","vbfhmm","e2m","m2m", "eemm","mmmm","nnmm","fjmm","nnmm_dycontrol","nnmm_topcontrol"],
 )
 GoodMuonEtaCut = Producer(
     name="GoodMuonEtaCut",
     call="physicsobject::CutEta({df}, {input}, {output}, {max_muon_eta})",
-    input=[nanoAOD.Muon_eta],
+    input=[q.Muon_eta_corrected],
     output=[],
     scopes=["gghmm","vbfhmm","e2m","m2m", "eemm","mmmm","nnmm","fjmm","nnmm_dycontrol","nnmm_topcontrol"],
 )
@@ -326,7 +326,7 @@ DiMuonVeto = ProducerGroup(
 MuonCollection = Producer(
     name="MuonCollection",
     call="jet::OrderJetsByPt({df}, {output}, {input})",
-    input=[nanoAOD.Muon_pt, q.good_muons_mask],
+    input=[q.Muon_pt_corrected, q.good_muons_mask],
     output=[q.good_muon_collection],
     scopes=["gghmm","vbfhmm","e2m","m2m", "eemm","mmmm","nnmm","fjmm","nnmm_dycontrol","nnmm_topcontrol"],
 )
@@ -335,10 +335,10 @@ LVMu1 = Producer(
     call="lorentzvectors::build({df}, {input_vec}, 0, {output})",
     input=[
         q.good_muon_collection,
-        nanoAOD.Muon_pt,
-        nanoAOD.Muon_eta,
-        nanoAOD.Muon_phi,
-        nanoAOD.Muon_mass,
+        q.Muon_pt_corrected,
+        q.Muon_eta_corrected,
+        q.Muon_phi_corrected,
+        q.Muon_mass_corrected,
     ],
     output=[q.muon_p4_1],
     scopes=["gghmm","vbfhmm","e2m","m2m", "eemm","mmmm","nnmm","fjmm"],
@@ -348,10 +348,10 @@ LVMu2 = Producer(
     call="lorentzvectors::build({df}, {input_vec}, 1, {output})",
     input=[
         q.good_muon_collection,
-        nanoAOD.Muon_pt,
-        nanoAOD.Muon_eta,
-        nanoAOD.Muon_phi,
-        nanoAOD.Muon_mass,
+        q.Muon_pt_corrected,
+        q.Muon_eta_corrected,
+        q.Muon_phi_corrected,
+        q.Muon_mass_corrected,
     ],
     output=[q.muon_p4_2],
     scopes=["gghmm","vbfhmm","e2m","m2m", "eemm","mmmm","nnmm","fjmm"],
@@ -402,10 +402,10 @@ Mu1_H_KITBSC = Producer(
     call="lorentzvectors::build({df}, {input_vec}, 0, {output})",
     input=[
         q.dimuon_HiggsCand_collection,
-        q.Muon_pt_kit_bsc,
-        nanoAOD.Muon_eta,
-        nanoAOD.Muon_phi,
-        nanoAOD.Muon_mass,
+        q.Muon_pt_corrected,
+        q.Muon_eta_corrected,
+        q.Muon_phi_corrected,
+        q.Muon_mass_corrected,
     ],
     output=[q.muon_leadingp4_H],
     scopes=["vbfhmm"],
@@ -429,10 +429,10 @@ Mu2_H_KITBSC = Producer(
     call="lorentzvectors::build({df}, {input_vec}, 1, {output})",
     input=[
         q.dimuon_HiggsCand_collection,
-        q.Muon_pt_kit_bsc,
-        nanoAOD.Muon_eta,
-        nanoAOD.Muon_phi,
-        nanoAOD.Muon_mass,
+        q.Muon_pt_corrected,
+        q.Muon_eta_corrected,
+        q.Muon_phi_corrected,
+        q.Muon_mass_corrected,
     ],
     output=[q.muon_subleadingp4_H],
     scopes=["vbfhmm"],
@@ -491,4 +491,20 @@ Mu2_Z_4m = Producer(
     ],
     output=[q.lepton_subleadingp4_Z],
     scopes=["mmmm"],
+)
+
+# Store original indices, rather than positions in the sorted collection.
+Muon_index_1 = Producer(
+    name="Muon_index_1",
+    call="basefunctions::CollectionIndex({df}, {output}, {input}, 0)",
+    input=[q.dimuon_HiggsCand_collection],
+    output=[q.mu1_fromH_index],
+    scopes=["vbfhmm"],
+)
+Muon_index_2 = Producer(
+    name="Muon_index_2",
+    call="basefunctions::CollectionIndex({df}, {output}, {input}, 1)",
+    input=[q.dimuon_HiggsCand_collection],
+    output=[q.mu2_fromH_index],
+    scopes=["vbfhmm"],
 )

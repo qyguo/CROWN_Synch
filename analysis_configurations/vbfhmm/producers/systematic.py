@@ -46,3 +46,16 @@ CalQCDScaleUncertainty_down = Producer(
     output=[q.qcd_unc_down],
     scopes=["global", "vbfhmm"],
 )
+
+StoreLHE_pdf = Producer(
+    name="StoreLHE_pdf",
+    call='basefunctions::StoreTheoryWeights({df}, {output}, "LHEPdfWeight")',
+    input=[], output=[q.LHE_pdf_weights], scopes=["vbfhmm"],
+)
+StoreLHE_scale = Producer(
+    name="StoreLHE_scale",
+    call='basefunctions::StoreTheoryWeights({df}, {output}, "LHEScaleWeight")',
+    input=[], output=[q.LHE_scale_weights], scopes=["vbfhmm"],
+)
+QCDScaleUpStored = Producer(name="QCDScaleUpStored", call='reweighting::LHEscale({df}, {output}, {input}, "up")', input=[q.LHE_scale_weights], output=[q.qcd_unc_up], scopes=["vbfhmm"])
+QCDScaleDownStored = Producer(name="QCDScaleDownStored", call='reweighting::LHEscale({df}, {output}, {input}, "down")', input=[q.LHE_scale_weights], output=[q.qcd_unc_down], scopes=["vbfhmm"])

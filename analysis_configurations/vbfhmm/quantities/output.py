@@ -535,3 +535,110 @@ vbf_maxmjj_index_2 = Quantity("vbf_maxmjj_index_2")
 mjj_max = Quantity("mjj_max")
 deta_jj_maxmjj = Quantity("deta_jj_maxmjj")
 is_vbf_maxmjj = Quantity("is_vbf_maxmjj")
+
+Muon_ptErr_bsc_or_nominal = Quantity("Muon_ptErr_bsc_or_nominal")
+Muon_pt_corrected = Quantity("Muon_pt_corrected")
+Muon_eta_corrected = Quantity("Muon_eta_corrected")
+Muon_phi_corrected = Quantity("Muon_phi_corrected")
+Muon_mass_corrected = Quantity("Muon_mass_corrected")
+
+# Original NanoAOD Muon indices in final Higgs candidate order.
+mu1_fromH_index = Quantity("mu1_fromH_index")
+mu2_fromH_index = Quantity("mu2_fromH_index")
+
+mu1_raw_p4 = Quantity("mu1_raw_p4")
+mu1_rawpT = Quantity("mu1_rawpT")
+mu1_raw_eta = Quantity("mu1_raw_eta")
+mu1_raw_phi = Quantity("mu1_raw_phi")
+mu1_raw_mass = Quantity("mu1_raw_mass")
+
+mu2_raw_p4 = Quantity("mu2_raw_p4")
+mu2_rawpT = Quantity("mu2_rawpT")
+mu2_raw_eta = Quantity("mu2_raw_eta")
+mu2_raw_phi = Quantity("mu2_raw_phi")
+mu2_raw_mass = Quantity("mu2_raw_mass")
+
+dimuon_raw_p4 = Quantity("dimuon_raw_p4")
+dimuon_rawpT = Quantity("dimuon_rawpT")
+dimuon_raw_eta = Quantity("dimuon_raw_eta")
+dimuon_raw_phi = Quantity("dimuon_raw_phi")
+dimuon_raw_mass = Quantity("dimuon_raw_mass")
+
+mu1_bsc_p4 = Quantity("mu1_bsc_p4")
+mu1_bsc_pt = Quantity("mu1_bsc_pt")
+mu1_bsc_eta = Quantity("mu1_bsc_eta")
+mu1_bsc_phi = Quantity("mu1_bsc_phi")
+mu1_bsc_mass = Quantity("mu1_bsc_mass")
+
+mu2_bsc_p4 = Quantity("mu2_bsc_p4")
+mu2_bsc_pt = Quantity("mu2_bsc_pt")
+mu2_bsc_eta = Quantity("mu2_bsc_eta")
+mu2_bsc_phi = Quantity("mu2_bsc_phi")
+mu2_bsc_mass = Quantity("mu2_bsc_mass")
+
+dimuon_bsc_p4 = Quantity("dimuon_bsc_p4")
+dimuon_bsc_pt = Quantity("dimuon_bsc_pt")
+dimuon_bsc_eta = Quantity("dimuon_bsc_eta")
+dimuon_bsc_phi = Quantity("dimuon_bsc_phi")
+dimuon_bsc_mass = Quantity("dimuon_bsc_mass")
+
+mu1_kit_bsc_p4 = Quantity("mu1_kit_bsc_p4")
+mu1_kit_bsc_pt = Quantity("mu1_kit_bsc_pt")
+mu1_kit_bsc_eta = Quantity("mu1_kit_bsc_eta")
+mu1_kit_bsc_phi = Quantity("mu1_kit_bsc_phi")
+mu1_kit_bsc_mass = Quantity("mu1_kit_bsc_mass")
+
+mu2_kit_bsc_p4 = Quantity("mu2_kit_bsc_p4")
+mu2_kit_bsc_pt = Quantity("mu2_kit_bsc_pt")
+mu2_kit_bsc_eta = Quantity("mu2_kit_bsc_eta")
+mu2_kit_bsc_phi = Quantity("mu2_kit_bsc_phi")
+mu2_kit_bsc_mass = Quantity("mu2_kit_bsc_mass")
+
+dimuon_kit_bsc_p4 = Quantity("dimuon_kit_bsc_p4")
+dimuon_kit_bsc_pt = Quantity("dimuon_kit_bsc_pt")
+dimuon_kit_bsc_eta = Quantity("dimuon_kit_bsc_eta")
+dimuon_kit_bsc_phi = Quantity("dimuon_kit_bsc_phi")
+dimuon_kit_bsc_mass = Quantity("dimuon_kit_bsc_mass")
+
+mu1_fsr_kit_bsc_p4 = Quantity("mu1_fsr_kit_bsc_p4")
+mu1_fsr_kit_bsc_pt = Quantity("mu1_fsr_kit_bsc_pt")
+mu1_fsr_kit_bsc_eta = Quantity("mu1_fsr_kit_bsc_eta")
+mu1_fsr_kit_bsc_phi = Quantity("mu1_fsr_kit_bsc_phi")
+mu1_fsr_kit_bsc_mass = Quantity("mu1_fsr_kit_bsc_mass")
+
+mu2_fsr_kit_bsc_p4 = Quantity("mu2_fsr_kit_bsc_p4")
+mu2_fsr_kit_bsc_pt = Quantity("mu2_fsr_kit_bsc_pt")
+mu2_fsr_kit_bsc_eta = Quantity("mu2_fsr_kit_bsc_eta")
+mu2_fsr_kit_bsc_phi = Quantity("mu2_fsr_kit_bsc_phi")
+mu2_fsr_kit_bsc_mass = Quantity("mu2_fsr_kit_bsc_mass")
+
+dimuon_fsr_kit_bsc_p4 = Quantity("dimuon_fsr_kit_bsc_p4")
+dimuon_fsr_kit_bsc_pt = Quantity("dimuon_fsr_kit_bsc_pt")
+dimuon_fsr_kit_bsc_eta = Quantity("dimuon_fsr_kit_bsc_eta")
+dimuon_fsr_kit_bsc_phi = Quantity("dimuon_fsr_kit_bsc_phi")
+dimuon_fsr_kit_bsc_mass = Quantity("dimuon_fsr_kit_bsc_mass")
+
+puweight_up = Quantity("puweight_up")
+puweight_down = Quantity("puweight_down")
+
+mu1_IsoMu24_sf = Quantity("mu1_IsoMu24_sf")
+mu2_IsoMu24_sf = Quantity("mu2_IsoMu24_sf")
+
+mu1_IsoMu24_matched = Quantity("mu1_IsoMu24_matched")
+
+mu2_IsoMu24_matched = Quantity("mu2_IsoMu24_matched")
+
+IsoMu24_event_total = Quantity("IsoMu24_event_total")
+
+IsoMu24_event_pass = Quantity("IsoMu24_event_pass")
+
+mu1_IsoMu24_total = Quantity("mu1_IsoMu24_total")
+
+mu1_IsoMu24_pass = Quantity("mu1_IsoMu24_pass")
+
+mu2_IsoMu24_total = Quantity("mu2_IsoMu24_total")
+
+mu2_IsoMu24_pass = Quantity("mu2_IsoMu24_pass")
+
+LHE_pdf_weights = Quantity("LHE_pdf_weights")
+LHE_scale_weights = Quantity("LHE_scale_weights")

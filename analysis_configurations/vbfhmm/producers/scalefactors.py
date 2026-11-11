@@ -490,3 +490,19 @@ btagging_SF = Producer(
     output=[q.btag_weight],
     scopes=["vbfhmm"],
 )
+
+Muon1IsoMu24SF = Producer(
+    name="Muon1IsoMu24SF",
+    call='scalefactor::muon::isomu24({df}, {input}, {output}, "{muon_sf_file}", "{muon_trigger_sf_name}")',
+    input=[q.mu1_fromH_pt, q.mu1_fromH_eta],
+    output=[q.mu1_IsoMu24_sf], scopes=["vbfhmm"],
+)
+
+Muon2IsoMu24SF = Producer(
+    name="Muon2IsoMu24SF",
+    call='scalefactor::muon::isomu24({df}, {input}, {output}, "{muon_sf_file}", "{muon_trigger_sf_name}")',
+    input=[q.mu2_fromH_pt, q.mu2_fromH_eta],
+    output=[q.mu2_IsoMu24_sf], scopes=["vbfhmm"],
+)
+
+MuonIsoMu24SF = ProducerGroup(name="MuonIsoMu24SF", call=None, input=None, output=None, scopes=["vbfhmm"], subproducers=[Muon1IsoMu24SF, Muon2IsoMu24SF])

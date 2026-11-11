@@ -363,6 +363,7 @@ ROOT::RDF::RNode applyMuonScaReMC_Err(
                                   const std::string &phiCol,
                                   const std::string &chargeCol,
                                   const std::string &nLCol);
+ROOT::RDF::RNode MuonFSRVector(ROOT::RDF::RNode, const std::string&, const std::string&, const std::string&, const std::string&, const std::string&, const std::string&, const std::string&, const std::string&, const std::string&, const std::string&, const std::string&, int);
 ROOT::RDF::RNode MuonPtBscOrNominal(ROOT::RDF::RNode df,
                                   const std::string &outputname,
                                   const std::string &ptCol,

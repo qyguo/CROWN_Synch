@@ -3,6 +3,7 @@
 
 namespace scalefactor {
 namespace muon {
+ROOT::RDF::RNode isomu24(ROOT::RDF::RNode, const std::string&, const std::string&, const std::string&, const std::string&, const std::string&);
 ROOT::RDF::RNode id_rooworkspace(ROOT::RDF::RNode df, const std::string &pt,
                                  const std::string &eta,
                                  const std::string &id_output,

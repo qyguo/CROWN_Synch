@@ -615,6 +615,12 @@ MuonPtBscOrNominal = Producer(
     scopes=["global", "vbfhmm"],
 )
 
+MuonPtErrBscOrNominal = Producer(
+ name="MuonPtErrBscOrNominal",
+ call="physicsobject::muon::MuonPtBscOrNominal({df}, {output}, {input}, 30.0)",
+ input=[nanoAOD.Muon_ptErr, nanoAOD.Muon_bsConstrainedPtErr, nanoAOD.Muon_bsConstrainedChi2],
+ output=[q.Muon_ptErr_bsc_or_nominal], scopes=["global", "vbfhmm"],
+)
 applyMuonScaReBSCVector = Producer(
     name="applyMuonScaReBSCVector",
     call='physicsobject::muon::applyMuonScaReBSCVector({df}, {output}, "{muon_KIT_files}", {is_data}, {input})',
@@ -643,6 +649,26 @@ applyMuonScaReBSCVectorErr = Producer(
     scopes=["global", "vbfhmm"],
 )
 
+MuonFSR_pt = Producer(
+ name="MuonFSR_pt", call="physicsobject::muon::MuonFSRVector({df}, {output}, {input}, 0)",
+ input=[q.Muon_pt_kit_bsc, nanoAOD.Muon_eta, nanoAOD.Muon_phi, nanoAOD.Muon_mass, nanoAOD.Muon_fsrPhotonIdx, nanoAOD.FsrPhoton_pt, nanoAOD.FsrPhoton_eta, nanoAOD.FsrPhoton_phi, nanoAOD.FsrPhoton_relIso03, nanoAOD.FsrPhoton_dROverEt2],
+ output=[q.Muon_pt_corrected], scopes=["global", "vbfhmm"],
+)
+MuonFSR_eta = Producer(
+ name="MuonFSR_eta", call="physicsobject::muon::MuonFSRVector({df}, {output}, {input}, 1)",
+ input=[q.Muon_pt_kit_bsc, nanoAOD.Muon_eta, nanoAOD.Muon_phi, nanoAOD.Muon_mass, nanoAOD.Muon_fsrPhotonIdx, nanoAOD.FsrPhoton_pt, nanoAOD.FsrPhoton_eta, nanoAOD.FsrPhoton_phi, nanoAOD.FsrPhoton_relIso03, nanoAOD.FsrPhoton_dROverEt2],
+ output=[q.Muon_eta_corrected], scopes=["global", "vbfhmm"],
+)
+MuonFSR_phi = Producer(
+ name="MuonFSR_phi", call="physicsobject::muon::MuonFSRVector({df}, {output}, {input}, 2)",
+ input=[q.Muon_pt_kit_bsc, nanoAOD.Muon_eta, nanoAOD.Muon_phi, nanoAOD.Muon_mass, nanoAOD.Muon_fsrPhotonIdx, nanoAOD.FsrPhoton_pt, nanoAOD.FsrPhoton_eta, nanoAOD.FsrPhoton_phi, nanoAOD.FsrPhoton_relIso03, nanoAOD.FsrPhoton_dROverEt2],
+ output=[q.Muon_phi_corrected], scopes=["global", "vbfhmm"],
+)
+MuonFSR_mass = Producer(
+ name="MuonFSR_mass", call="physicsobject::muon::MuonFSRVector({df}, {output}, {input}, 3)",
+ input=[q.Muon_pt_kit_bsc, nanoAOD.Muon_eta, nanoAOD.Muon_phi, nanoAOD.Muon_mass, nanoAOD.Muon_fsrPhotonIdx, nanoAOD.FsrPhoton_pt, nanoAOD.FsrPhoton_eta, nanoAOD.FsrPhoton_phi, nanoAOD.FsrPhoton_relIso03, nanoAOD.FsrPhoton_dROverEt2],
+ output=[q.Muon_mass_corrected], scopes=["global", "vbfhmm"],
+)
 applyMuonScaReBSCPrePair = ProducerGroup(
     name="applyMuonScaReBSCPrePair",
     call=None,
@@ -652,13 +678,17 @@ applyMuonScaReBSCPrePair = ProducerGroup(
     subproducers={
         "global": [
             MuonPtBscOrNominal,
+            MuonPtErrBscOrNominal,
             applyMuonScaReBSCVector,
             applyMuonScaReBSCVectorErr,
+            MuonFSR_pt, MuonFSR_eta, MuonFSR_phi, MuonFSR_mass,
         ],
         "vbfhmm": [
             MuonPtBscOrNominal,
+            MuonPtErrBscOrNominal,
             applyMuonScaReBSCVector,
             applyMuonScaReBSCVectorErr,
+            MuonFSR_pt, MuonFSR_eta, MuonFSR_phi, MuonFSR_mass,
         ],
     },
 )
@@ -1137,10 +1167,10 @@ HiggsToDiMuonPair_p4_KITBSC = Producer(
 HiggsToDiMuonPair_p4_BSC = Producer(
     name="HiggsToDiMuonPair_p4_BSC",
     call='physicsobject::HiggsToDiMuonPairCollection({df}, {output}, {input})',
-    input=[nanoAOD.Muon_bsConstrainedPt,
-           nanoAOD.Muon_eta,
-           nanoAOD.Muon_phi,
-           nanoAOD.Muon_mass,
+    input=[q.Muon_pt_corrected,
+           q.Muon_eta_corrected,
+           q.Muon_phi_corrected,
+           q.Muon_mass_corrected,
            q.dimuon_HiggsCand_collection],
     output=[q.dimuon_p4_Higgs],
     scopes=["vbfhmm"],
@@ -1182,10 +1212,10 @@ ZToDiElectronPair_p4 = Producer(
 DiMuonMassFromZVeto = Producer(
     name="DiMuonMassFromZVeto",
     call='physicsobject::DiMuonFromZVeto({df}, {output}, {input})',
-    input=[nanoAOD.Muon_pt,
-           nanoAOD.Muon_eta, 
-           nanoAOD.Muon_phi, 
-           nanoAOD.Muon_mass,
+    input=[q.Muon_pt_corrected,
+           q.Muon_eta_corrected,
+           q.Muon_phi_corrected,
+           q.Muon_mass_corrected,
            nanoAOD.Muon_charge,
            q.good_muon_collection],
     output=[q.Flag_dimuon_Zmass_veto], # 1 stands for noZmass, 0 stands for has dimuon from Zmass
@@ -1218,10 +1248,10 @@ Mask_DiMuonPair_KITBSC = Producer(
 Mask_DiMuonPair_BSC = Producer(
     name="Mask_DiMuonPair_BSC",
     call='physicsobject::HiggsCandDiMuonPairCollectionWithMassWindow({df}, {output}, {input}, {dimuon_mass_low}, {dimuon_mass_high})',
-    input=[nanoAOD.Muon_bsConstrainedPt,
-           nanoAOD.Muon_eta,
-           nanoAOD.Muon_phi,
-           nanoAOD.Muon_mass,
+    input=[q.Muon_pt_corrected,
+           q.Muon_eta_corrected,
+           q.Muon_phi_corrected,
+           q.Muon_mass_corrected,
            nanoAOD.Muon_charge,
            q.good_muon_collection],
     output=[q.dimuon_HiggsCand_collection],
@@ -1904,4 +1934,20 @@ VBFJetAcceptanceFilter = Filter(
     input=[],
     scopes=["vbfhmm"],
     subproducers=[VBFJetCutFlag],
+)
+
+PUweights_up = Producer(
+    name="PUweights_up",
+    call='reweighting::puweights({df}, {output}, {input}, "{PU_reweighting_file}", "{PU_reweighting_era}", "up")',
+    input=[nanoAOD.Pileup_nTrueInt],
+    output=[q.puweight_up],
+    scopes=["global"],
+)
+
+PUweights_down = Producer(
+    name="PUweights_down",
+    call='reweighting::puweights({df}, {output}, {input}, "{PU_reweighting_file}", "{PU_reweighting_era}", "down")',
+    input=[nanoAOD.Pileup_nTrueInt],
+    output=[q.puweight_down],
+    scopes=["global"],
 )

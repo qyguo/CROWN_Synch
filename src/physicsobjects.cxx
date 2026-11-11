@@ -2224,6 +2224,28 @@ ROOT::RDF::RNode applyMuonScaReData(ROOT::RDF::RNode df,
                      {objCollection, chargeCol, ptCol, etaCol, phiCol});
 }
 
+ROOT::RDF::RNode MuonFSRVector(ROOT::RDF::RNode df, const std::string &out,
+ const std::string &pt, const std::string &eta, const std::string &phi,
+ const std::string &mass, const std::string &idx, const std::string &ppt,
+ const std::string &peta, const std::string &pphi, const std::string &iso,
+ const std::string &dr, int component) {
+ return df.Define(out, [component](const ROOT::RVec<float>& p,
+ const ROOT::RVec<float>& e, const ROOT::RVec<float>& f,
+ const ROOT::RVec<float>& m, const ROOT::RVec<Short_t>& indices,
+ const ROOT::RVec<float>& pp, const ROOT::RVec<float>& pe,
+ const ROOT::RVec<float>& pf, const ROOT::RVec<float>& isolation,
+ const ROOT::RVec<float>& distance) {
+ ROOT::RVec<float> result; result.reserve(p.size());
+ for (size_t i=0; i<p.size(); ++i) {
+ ROOT::Math::PtEtaPhiMVector v(p.at(i),e.at(i),f.at(i),m.at(i));
+ int j=indices.at(i);
+ if (j>=0 && static_cast<size_t>(j)<pp.size() && isolation.at(j)<1.8f && distance.at(j)<0.012f)
+ v += ROOT::Math::PtEtaPhiMVector(pp.at(j),pe.at(j),pf.at(j),0.);
+ result.push_back(component==0?v.Pt():component==1?v.Eta():component==2?v.Phi():v.M());
+ } return result;
+ }, {pt,eta,phi,mass,idx,ppt,peta,pphi,iso,dr});
+}
+
 ROOT::RDF::RNode MuonPtBscOrNominal(ROOT::RDF::RNode df,
                                   const std::string &outputname,
                                   const std::string &ptCol,
