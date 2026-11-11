@@ -1079,8 +1079,6 @@ def build_config(
         [
             event.SampleFlags,
             event.PUweights,
-            event.PUweights_up,
-            event.PUweights_down,
             #event.PrefireWeight,
             event.Lumi,
             event.MetFilter,
@@ -1280,8 +1278,6 @@ def build_config(
             q.lumi,
             nanoAOD.event,
             q.puweight,
-            q.puweight_up,
-            q.puweight_down,
             #
             q.nmuons,
             #q.MHT_p4,
@@ -1499,6 +1495,21 @@ def build_config(
             ],
         )
 
+    # Pileup uncertainties: produce and store variations only for MC.
+    if sample != "data":
+        configuration.add_modification_rule(
+            "vbfhmm",
+            AppendProducer(
+                producers=[event.PUweights_up, event.PUweights_down],
+                samples=sample,
+                update_output=False,
+            ),
+        )
+        configuration.add_outputs(
+            "vbfhmm",
+            [q.puweight_up, q.puweight_down],
+        )
+
     # Preserve LHE members for bin-level PDF/scale prescriptions (MC only).
     if sample != "data":
         configuration.add_producers("vbfhmm", [
@@ -1514,7 +1525,7 @@ def build_config(
     configuration.add_modification_rule(
         "global",
         RemoveProducer(
-            producers=[event.PUweights, event.PUweights_up, event.PUweights_down, met.BuildGenMetVector,],
+            producers=[event.PUweights, met.BuildGenMetVector,],
             samples=["data"],
         ),
     )

@@ -9,7 +9,7 @@ from code_generation.producer import Producer, ProducerGroup
 Muon_pTErr_1 = Producer(
     name="Muon_pTErr_1",
     call="quantities::ptErr({df}, {output}, 0, {input})",
-    input=[q.dimuon_HiggsCand_collection, q.Muon_ptErr_bsc_or_nominal],
+    input=[q.dimuon_HiggsCand_collection, q.Muon_ptErr_bsc],
     output=[q.mu1_fromH_ptErr],
     scopes=["vbfhmm"],
 )
@@ -17,7 +17,7 @@ Muon_pTErr_1 = Producer(
 Muon_pTErr_2 = Producer(
     name="Muon_pTErr_2",
     call="quantities::ptErr({df}, {output}, 1, {input})",
-    input=[q.dimuon_HiggsCand_collection, q.Muon_ptErr_bsc_or_nominal],
+    input=[q.dimuon_HiggsCand_collection, q.Muon_ptErr_bsc],
     output=[q.mu2_fromH_ptErr],
     scopes=["vbfhmm"],
 )

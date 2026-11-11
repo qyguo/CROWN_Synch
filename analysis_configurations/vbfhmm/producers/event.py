@@ -619,7 +619,7 @@ MuonPtErrBscOrNominal = Producer(
  name="MuonPtErrBscOrNominal",
  call="physicsobject::muon::MuonPtBscOrNominal({df}, {output}, {input}, 30.0)",
  input=[nanoAOD.Muon_ptErr, nanoAOD.Muon_bsConstrainedPtErr, nanoAOD.Muon_bsConstrainedChi2],
- output=[q.Muon_ptErr_bsc_or_nominal], scopes=["global", "vbfhmm"],
+ output=[q.Muon_ptErr_bsc], scopes=["global", "vbfhmm"],
 )
 applyMuonScaReBSCVector = Producer(
     name="applyMuonScaReBSCVector",
@@ -1941,7 +1941,7 @@ PUweights_up = Producer(
     call='reweighting::puweights({df}, {output}, {input}, "{PU_reweighting_file}", "{PU_reweighting_era}", "up")',
     input=[nanoAOD.Pileup_nTrueInt],
     output=[q.puweight_up],
-    scopes=["global"],
+    scopes=["global", "vbfhmm"],
 )
 
 PUweights_down = Producer(
@@ -1949,5 +1949,5 @@ PUweights_down = Producer(
     call='reweighting::puweights({df}, {output}, {input}, "{PU_reweighting_file}", "{PU_reweighting_era}", "down")',
     input=[nanoAOD.Pileup_nTrueInt],
     output=[q.puweight_down],
-    scopes=["global"],
+    scopes=["global", "vbfhmm"],
 )

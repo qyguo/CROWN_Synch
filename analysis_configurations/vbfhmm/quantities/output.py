@@ -536,7 +536,7 @@ mjj_max = Quantity("mjj_max")
 deta_jj_maxmjj = Quantity("deta_jj_maxmjj")
 is_vbf_maxmjj = Quantity("is_vbf_maxmjj")
 
-Muon_ptErr_bsc_or_nominal = Quantity("Muon_ptErr_bsc_or_nominal")
+Muon_ptErr_bsc = Quantity("Muon_ptErr_bsc")
 Muon_pt_corrected = Quantity("Muon_pt_corrected")
 Muon_eta_corrected = Quantity("Muon_eta_corrected")
 Muon_phi_corrected = Quantity("Muon_phi_corrected")
