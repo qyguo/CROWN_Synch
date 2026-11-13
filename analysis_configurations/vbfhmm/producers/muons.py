@@ -38,14 +38,14 @@ Muon_charge_2 = Producer(
 )
 Muon_id_1 = Producer(
     name="Muon_id_1",
-    call="quantities::ptErr({df}, {output}, 0, {input})",
+    call="basefunctions::getvar<Bool_t>({df}, {output}, 0, {input})",
     input=[q.dimuon_HiggsCand_collection, nanoAOD.Muon_mediumId],
     output=[q.mu1_fromH_id],
     scopes=["vbfhmm"],
 )
 Muon_id_2 = Producer(
     name="Muon_id_2",
-    call="quantities::ptErr({df}, {output}, 1, {input})",
+    call="basefunctions::getvar<Bool_t>({df}, {output}, 1, {input})",
     input=[q.dimuon_HiggsCand_collection, nanoAOD.Muon_mediumId],
     output=[q.mu2_fromH_id],
     scopes=["vbfhmm"],
