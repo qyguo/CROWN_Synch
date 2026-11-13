@@ -198,3 +198,5 @@ FatJet_deepTag_ZvsQCD = NanoAODQuantity("FatJet_deepTag_ZvsQCD") # DeepBoostedJe
 FatJet_deepTag_QCD = NanoAODQuantity("FatJet_deepTag_QCD") # DeepBoostedJet tagger QCD(bb,cc,b,c,others) sum
 FatJet_deepTagMD_WvsQCD = NanoAODQuantity("FatJet_deepTagMD_WvsQCD") # Mass-decorrelated DeepBoostedJet tagger W vs QCD discriminator
 FatJet_deepTagMD_ZvsQCD = NanoAODQuantity("FatJet_deepTagMD_ZvsQCD") # Mass-decorrelated DeepBoostedJet tagger Z vs QCD discriminator
+
+Muon_tightId = NanoAODQuantity("Muon_tightId")

@@ -1083,7 +1083,7 @@ def build_config(
             event.Lumi,
             event.MetFilter,
             event.applyMuonScaReBSCPrePair,
-            muons.BaseMuons, # vh
+            muons.BaseMuonsV4, # vh
             # vbfhmm muon Rochester corr, FSR recovery added
             # GeoFit? TODO
             electrons.BaseElectrons,
