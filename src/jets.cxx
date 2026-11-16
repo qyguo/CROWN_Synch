@@ -2356,14 +2356,14 @@ JetPtCorrection_data_2024(ROOT::RDF::RNode df,
                                   const ROOT::RVec<float> &phi,
                                   const ROOT::RVec<UChar_t> &ID,
                                   const ROOT::RVec<float> &neEmEF,
-                                  const ROOT::RVec<float> &chEmEF) -> bool {
+                                  const ROOT::RVec<float> &chEmEF) -> int {
     for (int i = 0; i < (int)pt.size(); ++i) {
       if (pt[i] > 15.f && ID[i] >= 6 && ((neEmEF[i] + chEmEF[i]) < 0.9f)) {
         const float v = jet_veto_SF(eta[i], phi[i]);
-        if (v != 0.f) return true;
+        if (v != 0.f) return i;
       }
     }
-    return false;
+    return -1;
   };
 
   auto clipPtForResidualAfterL2Rel = [](float pt_after_L2Rel, float eta) -> float {
@@ -2395,12 +2395,24 @@ JetPtCorrection_data_2024(ROOT::RDF::RNode df,
             const float &rho_value,
             const ROOT::RVec<float> &jet_neEmEF_values,
             const ROOT::RVec<float> &jet_chEmEF_values,
-            const UInt_t run_value) {
+            const UInt_t run_value, const UInt_t lumi_value,
+            const ULong64_t event_value) {
           ROOT::RVec<float> out;
           out.reserve(pt_values.size());
 
-          if (hasJetVeto(pt_values, eta_values, phi_values,
-                         ID_values, jet_neEmEF_values, jet_chEmEF_values)) {
+          const int veto_index = hasJetVeto(pt_values, eta_values, phi_values,
+                         ID_values, jet_neEmEF_values, jet_chEmEF_values);
+          if (veto_index >= 0) {
+            Logger::get("JetVeto2024")->debug(
+              "run:lumi:event={}:{}:{} veto jet={} pt={} eta={} phi={} ID={} EMsum={}; ALL jets set to -999",
+              run_value, lumi_value, event_value, veto_index,
+              pt_values[veto_index], eta_values[veto_index], phi_values[veto_index],
+              int(ID_values[veto_index]), jet_neEmEF_values[veto_index]+jet_chEmEF_values[veto_index]);
+            if (run_value==385915 && lumi_value==83 && event_value==187452447ULL)
+              Logger::get("JetVeto2024")->info(
+                "TARGET 385915:83:187452447 veto jet={} pt={} eta={} phi={} ID={} EMsum={}; ALL jets set to -999",
+                veto_index, pt_values[veto_index], eta_values[veto_index], phi_values[veto_index],
+                int(ID_values[veto_index]), jet_neEmEF_values[veto_index]+jet_chEmEF_values[veto_index]);
             out.assign(pt_values.size(), -999.f);
             return out;
           }
@@ -2445,7 +2457,7 @@ JetPtCorrection_data_2024(ROOT::RDF::RNode df,
 
     return df.Define(corrected_jet_pt, JetEnergyCorrectionLambda,
                      {jet_pt, jet_eta, jet_phi, jet_area, jet_rawFactor,
-                      jet_ID, rho, jet_neEmEF, jet_chEmEF, run});
+                      jet_ID, rho, jet_neEmEF, jet_chEmEF, run, "luminosityBlock", "event"});
   }
 
   auto JetVetoOnlyLambda =
@@ -2456,12 +2468,25 @@ JetPtCorrection_data_2024(ROOT::RDF::RNode df,
           const ROOT::RVec<float> & /*rawFactor_values*/,
           const ROOT::RVec<UChar_t> &ID_values,
           const ROOT::RVec<float> &jet_neEmEF_values,
-          const ROOT::RVec<float> &jet_chEmEF_values) {
+          const ROOT::RVec<float> &jet_chEmEF_values,
+          const UInt_t run_value, const UInt_t lumi_value,
+          const ULong64_t event_value) {
         ROOT::RVec<float> out;
         out.reserve(pt_values.size());
 
-        if (hasJetVeto(pt_values, eta_values, phi_values,
-                       ID_values, jet_neEmEF_values, jet_chEmEF_values)) {
+        const int veto_index = hasJetVeto(pt_values, eta_values, phi_values,
+                         ID_values, jet_neEmEF_values, jet_chEmEF_values);
+          if (veto_index >= 0) {
+            Logger::get("JetVeto2024")->debug(
+              "run:lumi:event={}:{}:{} veto jet={} pt={} eta={} phi={} ID={} EMsum={}; ALL jets set to -999",
+              run_value, lumi_value, event_value, veto_index,
+              pt_values[veto_index], eta_values[veto_index], phi_values[veto_index],
+              int(ID_values[veto_index]), jet_neEmEF_values[veto_index]+jet_chEmEF_values[veto_index]);
+            if (run_value==385915 && lumi_value==83 && event_value==187452447ULL)
+              Logger::get("JetVeto2024")->info(
+                "TARGET 385915:83:187452447 veto jet={} pt={} eta={} phi={} ID={} EMsum={}; ALL jets set to -999",
+                veto_index, pt_values[veto_index], eta_values[veto_index], phi_values[veto_index],
+                int(ID_values[veto_index]), jet_neEmEF_values[veto_index]+jet_chEmEF_values[veto_index]);
           out.assign(pt_values.size(), -999.f);
           return out;
         }
@@ -2479,7 +2504,7 @@ JetPtCorrection_data_2024(ROOT::RDF::RNode df,
 
   return df.Define(corrected_jet_pt, JetVetoOnlyLambda,
                    {jet_pt, jet_eta, jet_phi, jet_area, jet_rawFactor,
-                    jet_ID, jet_neEmEF, jet_chEmEF});
+                    jet_ID, jet_neEmEF, jet_chEmEF, run, "luminosityBlock", "event"});
 }
 //
 // jet correction additional modification of pt<30 GeV of |eta| in (2,2.5)region.
