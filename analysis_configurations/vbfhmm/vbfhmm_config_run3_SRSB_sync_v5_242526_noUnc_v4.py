@@ -1333,6 +1333,22 @@ def build_config(
     configuration.add_outputs(
         "vbfhmm",
         [
+            # Full jet diagnostics to distinguish correction/veto/selection losses.
+            nanoAOD.Jet_pt,
+            nanoAOD.Jet_eta,
+            nanoAOD.Jet_phi,
+            nanoAOD.Jet_rawFactor,
+            nanoAOD.Jet_neEmEF,
+            nanoAOD.Jet_chEmEF,
+            q.jet_id_v15,
+            q.Jet_pt_corrected,
+            q.Jet_mass_corrected,
+            q.jet_id_mask,
+            q.jet_overlap_veto_mask,
+            q.good_jets_mask,
+            q.good_jet_collection,
+            q.good_bjets_mask_loose,
+            q.good_bjets_mask_medium,
             q.vbf_leading_index_1,
             q.vbf_leading_index_2,
             q.mjj_leading,
