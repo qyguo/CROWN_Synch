@@ -642,3 +642,9 @@ mu2_IsoMu24_pass = Quantity("mu2_IsoMu24_pass")
 
 LHE_pdf_weights = Quantity("LHE_pdf_weights")
 LHE_scale_weights = Quantity("LHE_scale_weights")
+
+vbf_anypair_index_1 = Quantity("vbf_anypair_index_1")
+vbf_anypair_index_2 = Quantity("vbf_anypair_index_2")
+mjj_anypair = Quantity("mjj_anypair")
+deta_jj_anypair = Quantity("deta_jj_anypair")
+is_vbf_anypair = Quantity("is_vbf_anypair")

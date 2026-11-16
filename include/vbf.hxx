@@ -35,5 +35,32 @@ inline ROOT::RVec<int> SelectDijet(ROOT::RVec<int> indices,
     }
     return pair;
 }
+// Choose the highest-pT-sum pair among pairs passing every VBF cut.
+inline ROOT::RVec<int> SelectPassingDijet(ROOT::RVec<int> indices,
+ const ROOT::RVec<float>& pt, const ROOT::RVec<float>& eta,
+ const ROOT::RVec<float>& phi, const ROOT::RVec<float>& mass,
+ float min_mass, float min_deta, float leading_pt, float subleading_pt) {
+ std::stable_sort(indices.begin(), indices.end(),
+                  [&](int a,int b){return pt.at(a)>pt.at(b);});
+ ROOT::RVec<int> best{-1,-1};
+ double best_sum=-1.;
+ for (std::size_t i=0;i<indices.size();++i) {
+   int a=indices[i];
+   if (!(pt.at(a)>leading_pt)) continue;
+   for (std::size_t j=i+1;j<indices.size();++j) {
+     int b=indices[j];
+     if (!(pt.at(b)>subleading_pt) ||
+         !(std::abs(eta.at(a)-eta.at(b))>min_deta)) continue;
+     ROOT::Math::PtEtaPhiMVector p1(pt.at(a),eta.at(a),phi.at(a),mass.at(a));
+     ROOT::Math::PtEtaPhiMVector p2(pt.at(b),eta.at(b),phi.at(b),mass.at(b));
+     double mjj=(p1+p2).M();
+     double sum=double(pt.at(a))+pt.at(b);
+     if (std::isfinite(mjj) && mjj>min_mass && sum>best_sum) {
+       best={a,b}; best_sum=sum;
+     }
+   }
+ }
+ return best;
+}
 } // namespace jet
 #endif

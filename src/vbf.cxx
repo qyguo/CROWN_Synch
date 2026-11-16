@@ -37,4 +37,20 @@ ROOT::RDF::RNode DijetSelection(ROOT::RDF::RNode df,
                    pts.at(b) > min_subleading_pt;
         }, {index1, index2, mjj, deta, pt});
 }
+ROOT::RDF::RNode PassingDijetSelection(ROOT::RDF::RNode df,
+ const std::string &index1, const std::string &index2,
+ const std::string &mjj, const std::string &deta, const std::string &flag,
+ const std::string &collection, const std::string &pt,
+ const std::string &eta, const std::string &phi, const std::string &mass,
+ float min_mass, float min_deta, float leading_pt, float subleading_pt) {
+ const auto selected=index1+"_accepted_pair";
+ auto node=df.Define(selected,[=](const ROOT::RVec<int>& indices,
+ const ROOT::RVec<float>& p,const ROOT::RVec<float>& e,
+ const ROOT::RVec<float>& f,const ROOT::RVec<float>& m) {
+   auto pair=SelectPassingDijet(indices,p,e,f,m,min_mass,min_deta,leading_pt,subleading_pt);
+   return pair[0]<0 ? ROOT::RVec<int>{} : pair;
+ },{collection,pt,eta,phi,mass});
+ return DijetSelection(node,index1,index2,mjj,deta,flag,selected,pt,eta,phi,mass,
+                       false,min_mass,min_deta,leading_pt,subleading_pt);
+}
 } // namespace jet

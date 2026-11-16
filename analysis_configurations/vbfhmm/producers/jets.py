@@ -925,3 +925,10 @@ MaxMjjDijetSelection = Producer(
     output=[q.vbf_maxmjj_index_1, q.vbf_maxmjj_index_2, q.mjj_max, q.deta_jj_maxmjj, q.is_vbf_maxmjj],
     scopes=["vbfhmm"],
 )
+
+PassingDijetSelection = Producer(
+ name="PassingDijetSelection",
+ call="jet::PassingDijetSelection({df}, {output}, {input}, {vbf_min_mjj}, {vbf_min_deta}, {vbf_min_leading_pt}, {vbf_min_subleading_pt})",
+ input=[q.good_jet_collection,q.Jet_pt_corrected,nanoAOD.Jet_eta,nanoAOD.Jet_phi,q.Jet_mass_corrected],
+ output=[q.vbf_anypair_index_1, q.vbf_anypair_index_2, q.mjj_anypair, q.deta_jj_anypair, q.is_vbf_anypair], scopes=["vbfhmm"],
+)

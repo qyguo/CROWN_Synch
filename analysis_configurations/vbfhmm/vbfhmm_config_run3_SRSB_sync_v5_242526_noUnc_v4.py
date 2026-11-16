@@ -1167,6 +1167,7 @@ def build_config(
             # v3 comparison flags: retain events passing either or neither.
             jets.LeadingDijetSelection,
             jets.MaxMjjDijetSelection,
+            jets.PassingDijetSelection,
             ## VBF selection
             ##event.VBFJetAcceptanceFilter,
             ##jets.FilterNJets,
@@ -1342,6 +1343,11 @@ def build_config(
             q.mjj_max,
             q.deta_jj_maxmjj,
             q.is_vbf_maxmjj,
+            q.vbf_anypair_index_1,
+            q.vbf_anypair_index_2,
+            q.mjj_anypair,
+            q.deta_jj_anypair,
+            q.is_vbf_anypair,
             q.mumuH_dR,
 
             #
