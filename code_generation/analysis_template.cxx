@@ -82,16 +82,12 @@ int main(int argc, char *argv[]) {
             TTree *t1 = (TTree *)f1->Get("Events");
             nevents += t1->GetEntries();
             TTree *t2 = (TTree *)f1->Get("Runs");
-            // Data Runs trees have no genEventSumw; extracted files may lack Runs.
-            if (t2 && t2->GetBranch("genEventSumw")) {
-                Double_t variable = 0.;
-                t2->SetBranchAddress("genEventSumw", &variable);
-                sumw_num = t2->GetEntries();
-                for (int j = 0; j < sumw_num; j++) {
-                    t2->GetEntry(j);
-                    sumofgenweight += variable;
-                }
-                t2->ResetBranchAddresses();
+            Double_t variable;
+            t2->SetBranchAddress("genEventSumw", &variable);
+            sumw_num = t2->GetEntries();
+            for (int i = 0; i < sumw_num; i++) {
+                t2->GetEntry(i);
+                sumofgenweight += variable;
             }
             Logger::get("main")->info("NanoAOD input_file {}: {} - {} Events",
                                       i - 1, argv[i], t1->GetEntries());
