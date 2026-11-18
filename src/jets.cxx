@@ -2328,7 +2328,8 @@ JetPtCorrection_data_2024(ROOT::RDF::RNode df,
                           const std::string &jes_tag,
                           const std::string &jec_algo,
                           const std::string &jet_veto_map,
-                          const std::string &jet_veto_tag) {
+                          const std::string &jet_veto_tag,
+                          bool event_veto) {
   auto jet_veto_map_evaluator =
       correction::CorrectionSet::from_file(jet_veto_map)->at(jet_veto_tag);
 
@@ -2402,7 +2403,7 @@ JetPtCorrection_data_2024(ROOT::RDF::RNode df,
 
           const int veto_index = hasJetVeto(pt_values, eta_values, phi_values,
                          ID_values, jet_neEmEF_values, jet_chEmEF_values);
-          if (veto_index >= 0) {
+          if (event_veto && veto_index >= 0) {
             Logger::get("JetVeto2024")->debug(
               "run:lumi:event={}:{}:{} veto jet={} pt={} eta={} phi={} ID={} EMsum={}; ALL jets set to -999",
               run_value, lumi_value, event_value, veto_index,
@@ -2445,7 +2446,9 @@ JetPtCorrection_data_2024(ROOT::RDF::RNode df,
               corr_pt = pt_L3 * cRes;
             }
 
-            if (vetoDataJetHorn(eta, corr_pt)) {
+            if ((!event_veto && pt_values[i] > 15.f && ID_values[i] >= 6 &&
+                 jet_neEmEF_values[i]+jet_chEmEF_values[i] < 0.9f &&
+                 jet_veto_SF(eta, phi) != 0.f) || vetoDataJetHorn(eta, corr_pt)) {
               corr_pt = -999.f;
             }
 
@@ -2476,7 +2479,7 @@ JetPtCorrection_data_2024(ROOT::RDF::RNode df,
 
         const int veto_index = hasJetVeto(pt_values, eta_values, phi_values,
                          ID_values, jet_neEmEF_values, jet_chEmEF_values);
-          if (veto_index >= 0) {
+          if (event_veto && veto_index >= 0) {
             Logger::get("JetVeto2024")->debug(
               "run:lumi:event={}:{}:{} veto jet={} pt={} eta={} phi={} ID={} EMsum={}; ALL jets set to -999",
               run_value, lumi_value, event_value, veto_index,
@@ -2493,7 +2496,10 @@ JetPtCorrection_data_2024(ROOT::RDF::RNode df,
 
         for (int i = 0; i < (int)pt_values.size(); ++i) {
           float corr_pt = pt_values[i];
-          if (vetoDataJetHorn(eta_values[i], corr_pt)) {
+          if ((!event_veto && pt_values[i] > 15.f && ID_values[i] >= 6 &&
+               jet_neEmEF_values[i]+jet_chEmEF_values[i] < 0.9f &&
+               jet_veto_SF(eta_values[i], phi_values[i]) != 0.f) ||
+              vetoDataJetHorn(eta_values[i], corr_pt)) {
             corr_pt = -999.f;
           }
           out.push_back(corr_pt);

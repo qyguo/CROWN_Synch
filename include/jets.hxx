@@ -154,7 +154,8 @@ JetPtCorrection_data_2024(ROOT::RDF::RNode df,
                              const std::string &jes_tag,
                              const std::string &jec_algo,
                              const std::string &jet_veto_map,
-                             const std::string &jet_veto_tag);
+                             const std::string &jet_veto_tag,
+                             bool event_veto = true);
 ROOT::RDF::RNode
 JetPtCorrection_data_2025(ROOT::RDF::RNode df,
                              const std::string &corrected_jet_pt,

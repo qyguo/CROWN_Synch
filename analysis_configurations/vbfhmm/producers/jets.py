@@ -932,3 +932,29 @@ PassingDijetSelection = Producer(
  input=[q.good_jet_collection,q.Jet_pt_corrected,nanoAOD.Jet_eta,nanoAOD.Jet_phi,q.Jet_mass_corrected],
  output=[q.vbf_anypair_index_1, q.vbf_anypair_index_2, q.mjj_anypair, q.deta_jj_anypair, q.is_vbf_anypair], scopes=["vbfhmm"],
 )
+
+# Optional diagnostic mode: remove individual map-veto jets, not whole events.
+JetPtCorrection_data_2024_JetOnlyVeto = Producer(
+    name="JetPtCorrection_data_2024_JetOnlyVeto",
+    #call="physicsobject::jet::JetPtCorrection_data_2022({df}, {output}, {input}, {jet_reapplyJES}, {jet_jes_sources}, {jet_jes_shift}, {jet_jer_shift}, {jet_jec_file}, {jet_jer_tag}, {jet_jes_tag}, {jet_jec_algo})",
+    call="physicsobject::jet::JetPtCorrection_data_2024({df}, {output}, {input}, {jet_jec_file}, {jet_jes_tag_data}, {jet_jec_algo}, {jet_veto_map}, {jet_veto_tag}, false)",
+    input=[
+        nanoAOD.Jet_pt,
+        nanoAOD.Jet_eta,
+        nanoAOD.Jet_phi,
+        nanoAOD.Jet_area,
+        nanoAOD.Jet_rawFactor,
+        q.jet_id_v15,
+        nanoAOD.rho,
+        nanoAOD.Jet_neEmEF,
+        nanoAOD.Jet_chEmEF,
+        nanoAOD.run,
+    ],
+    output=[q.Jet_pt_corrected],
+    scopes=["global"],
+)
+JetEnergyCorrection_data_2024_JetOnlyVeto = ProducerGroup(
+    name="JetEnergyCorrection_data_2024_JetOnlyVeto",
+    call=None, input=None, output=None, scopes=["global"],
+    subproducers=[JetPtCorrection_data_2024_JetOnlyVeto, JetMassCorrection],
+)
