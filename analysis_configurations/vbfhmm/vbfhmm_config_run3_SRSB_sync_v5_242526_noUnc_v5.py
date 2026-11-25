@@ -324,7 +324,7 @@ def build_config(
                             "etacut": 2.5,
                             "filterbit": 3,
                             "trigger_particle_id": 13,
-                            "max_deltaR_triggermatch": 0.4,
+                            "max_deltaR_triggermatch": 0.1,
                         },
                     ],
                     "2025": [
