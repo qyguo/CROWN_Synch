@@ -1,4 +1,4 @@
-from copy import deepcopy
+from copy import copy
 from ..quantities import output as q
 from ..quantities import nanoAOD as n
 from code_generation.producer import Producer, ProducerGroup
@@ -8,7 +8,8 @@ NewIso = Producer(name="NewIso", call="basefunctions::FSRNewIso({df}, {output}, 
  input=[n.Muon_pt,n.Muon_pfRelIso04_all,q.Muon_pt_corrected,n.Muon_eta,n.Muon_phi,n.Muon_fsrPhotonIdx,n.FsrPhoton_pt,n.FsrPhoton_eta,n.FsrPhoton_phi,n.FsrPhoton_relIso03,n.FsrPhoton_dROverEt2], output=[q.newIso],scopes=["global"])
 
 def iso_copy(producer):
-    result=deepcopy(producer)
+    result=copy(producer)
+    result.input = {scope: list(inputs) for scope, inputs in producer.input.items()}
     result.name += "V6"
     for scope in result.input:
         result.input[scope]=[q.newIso if x==n.Muon_pfRelIso04_all else x for x in result.input[scope]]
@@ -28,10 +29,10 @@ VHttHCount=Producer(name="VHttHCount",call="quantities::NumberOfGoodObjects({df}
 VHttHExtra=Producer(name="VHttHExtra",call="basefunctions::ExtraVHttHMuons({df}, {output}, {input})",input=[q.muon_VHttH_mask,q.dimuon_HiggsCand_collection],output=[q.nmuon_VHttH_extra],scopes=["vbfhmm"])
 NewIso1=Producer(name="NewIso1",call="basefunctions::getvar<float>({df}, {output}, 0, {input})",input=[q.dimuon_HiggsCand_collection,q.newIso],output=[q.mu1_newIso],scopes=["vbfhmm"])
 NewIso2=Producer(name="NewIso2",call="basefunctions::getvar<float>({df}, {output}, 1, {input})",input=[q.dimuon_HiggsCand_collection,q.newIso],output=[q.mu2_newIso],scopes=["vbfhmm"])
-Match1=deepcopy(triggers.Muon1IsoMu24Match)
+Match1=copy(triggers.Muon1IsoMu24Match)
 Match1.name="Muon1IsoMu24MatchV6"
 Match1.call=Match1.call.replace(", 0.4)",", 0.1)")
-Match2=deepcopy(triggers.Muon2IsoMu24Match)
+Match2=copy(triggers.Muon2IsoMu24Match)
 Match2.name="Muon2IsoMu24MatchV6"
 Match2.call=Match2.call.replace(", 0.4)",", 0.1)")
 Matches=ProducerGroup(name="MatchesV6",call=None,input=None,output=None,scopes=["vbfhmm"],subproducers=[Match1,Match2])
