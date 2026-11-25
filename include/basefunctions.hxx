@@ -57,15 +57,15 @@ inline ROOT::RDF::RNode ExtraVHttHMuons(ROOT::RDF::RNode df,const std::string& o
 
 // Additional low-pT requirements; medium ID and loose isolation remain upstream.
 inline ROOT::RDF::RNode LowPtMuonTightMask(ROOT::RDF::RNode df,
- const std::string &out, const std::string &pt, const std::string &tight,
- const std::string &iso) {
- return df.Define(out, [](const ROOT::RVec<float> &p,
+ const std::string &out, const std::string &pt, const std::string &iso,
+ const std::string &tight, float split_pt, float tight_iso) {
+ return df.Define(out, [split_pt, tight_iso](const ROOT::RVec<float> &p,
                          const ROOT::RVec<Bool_t> &id,
                          const ROOT::RVec<float> &isolation) {
    ROOT::RVec<int> mask(p.size(), 0);
    for (std::size_t i=0; i<p.size(); ++i) {
      mask[i] = std::isfinite(p.at(i)) &&
-       (p.at(i) >= 30.f || (id.at(i) && isolation.at(i) < 0.15f));
+       (p.at(i) >= split_pt || (id.at(i) && isolation.at(i) < tight_iso));
    }
    return mask;
  }, {pt, tight, iso});

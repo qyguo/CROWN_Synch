@@ -901,6 +901,16 @@ def build_config(
             "fatjet_jec_algo": '"AK8PFPuppi"',
         },
     )
+    # Low-pT muon requirements: passed via muons_v6 to the C++ mask helper.
+    configuration.add_config_parameters(
+        "global",
+        {
+            "muon_lowpt_split_pt": 30.0,
+            "muon_lowpt_tight_id": "Muon_tightId",
+            "muon_lowpt_iso_cut": 0.15,
+        },
+    )
+
     # bjet base selection:
     configuration.add_config_parameters(
         "global",

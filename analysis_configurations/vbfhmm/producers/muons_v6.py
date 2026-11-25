@@ -14,7 +14,14 @@ def iso_copy(producer):
         result.input[scope]=[q.newIso if x==n.Muon_pfRelIso04_all else x for x in result.input[scope]]
     return result
 
-BaseMuons = ProducerGroup(name="BaseMuonsV6",call="physicsobject::CombineMasks({df}, {output}, {input})",input=[],output=[q.base_muons_mask],scopes=["global"], subproducers=[muons.MuonPtCut,muons.MuonEtaCut,muons.MuonIDCut,iso_copy(muons.MuonIsoCut),iso_copy(muons.LowPtMuonTightCutV4)])
+LowPtMuonTightCut = Producer(
+    name="LowPtMuonTightCutV6",
+    call='basefunctions::LowPtMuonTightMask({df}, {output}, {input}, "{muon_lowpt_tight_id}", {muon_lowpt_split_pt}, {muon_lowpt_iso_cut})',
+    input=[q.Muon_pt_corrected, q.newIso],
+    output=[], scopes=["global"],
+)
+
+BaseMuons = ProducerGroup(name="BaseMuonsV6",call="physicsobject::CombineMasks({df}, {output}, {input})",input=[],output=[q.base_muons_mask],scopes=["global"], subproducers=[muons.MuonPtCut,muons.MuonEtaCut,muons.MuonIDCut,iso_copy(muons.MuonIsoCut),LowPtMuonTightCut])
 GoodMuons = ProducerGroup(name="GoodMuonsV6",call="physicsobject::CombineMasks({df}, {output}, {input})",input=[q.base_muons_mask],output=[q.good_muons_mask],scopes=["vbfhmm"],subproducers=[muons.GoodMuonPtCut,muons.GoodMuonEtaCut,muons.GoodMuonIDCut,iso_copy(muons.GoodMuonIsoCut)])
 VHttHMask=Producer(name="VHttHMask",call="basefunctions::VHttHMuonMask({df}, {output}, {input})",input=[q.Muon_pt_corrected,q.Muon_eta_corrected,n.Muon_isGlobal,n.Muon_isTracker,n.Muon_mediumId,n.Muon_dz,n.Muon_dxy,n.Muon_sip3d,n.Muon_miniPFRelIso_all],output=[q.muon_VHttH_mask],scopes=["global"])
 VHttHCount=Producer(name="VHttHCount",call="quantities::NumberOfGoodObjects({df}, {output}, {input})",input=[q.muon_VHttH_mask],output=[q.nmuon_VHttH],scopes=["global"])

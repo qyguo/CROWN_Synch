@@ -512,8 +512,8 @@ Muon_index_2 = Producer(
 # Used only by v4: additional tight ID/isolation below corrected pT 30 GeV.
 LowPtMuonTightCutV4 = Producer(
     name="LowPtMuonTightCutV4",
-    call="basefunctions::LowPtMuonTightMask({df}, {output}, {input})",
-    input=[q.Muon_pt_corrected, nanoAOD.Muon_tightId, nanoAOD.Muon_pfRelIso04_all],
+    call="basefunctions::LowPtMuonTightMask({df}, {output}, {input}, 30.0, 0.15)",
+    input=[q.Muon_pt_corrected, nanoAOD.Muon_pfRelIso04_all, nanoAOD.Muon_tightId],
     output=[], scopes=["global"],
 )
 BaseMuonsV4 = ProducerGroup(
