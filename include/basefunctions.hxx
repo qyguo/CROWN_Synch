@@ -15,6 +15,46 @@
 enum Channel { MT = 0, ET = 1, TT = 2, EM = 3 };
 
 namespace basefunctions {
+inline ROOT::RDF::RNode FSRNewIso(ROOT::RDF::RNode df,const std::string& out,
+ const std::string& rawpt,const std::string& iso,const std::string& finalpt,
+ const std::string& eta,const std::string& phi,const std::string& idx,
+ const std::string& ppt,const std::string& pe,const std::string& pf,
+ const std::string& pi,const std::string& pd) {
+ return df.Define(out,[](const ROOT::RVec<float>& raw,const ROOT::RVec<float>& old,
+ const ROOT::RVec<float>& pt,const ROOT::RVec<float>& e,const ROOT::RVec<float>& f,
+ const ROOT::RVec<Short_t>& ids,const ROOT::RVec<float>& p,
+ const ROOT::RVec<float>& ep,const ROOT::RVec<float>& fp,
+ const ROOT::RVec<float>& isolation,const ROOT::RVec<float>& distance) {
+ ROOT::RVec<float> result(raw.size());
+ for(size_t i=0;i<raw.size();++i){
+   float subtract=0; int j=ids.at(i);
+   if(j>=0 && size_t(j)<p.size() && isolation.at(j)<1.8f && distance.at(j)<0.012f){
+     double dp=std::remainder(double(f.at(i)-fp.at(j)),2*std::acos(-1.));
+     double de=e.at(i)-ep.at(j);
+     if(de*de+dp*dp<0.16) subtract=p.at(j);
+   }
+   result[i]=pt.at(i)>0 ? (old.at(i)*raw.at(i)-subtract)/pt.at(i) : 999.f;
+ } return result;
+ },{rawpt,iso,finalpt,eta,phi,idx,ppt,pe,pf,pi,pd});
+}
+inline ROOT::RDF::RNode VHttHMuonMask(ROOT::RDF::RNode df,const std::string& out,
+ const std::string& pt,const std::string& eta,const std::string& global,
+ const std::string& tracker,const std::string& medium,const std::string& dz,
+ const std::string& dxy,const std::string& sip,const std::string& mini){
+ return df.Define(out,[](const ROOT::RVec<float>& p,const ROOT::RVec<float>& e,
+ const ROOT::RVec<Bool_t>& g,const ROOT::RVec<Bool_t>& t,const ROOT::RVec<Bool_t>& m,
+ const ROOT::RVec<float>& z,const ROOT::RVec<float>& x,const ROOT::RVec<float>& s,
+ const ROOT::RVec<float>& iso){ROOT::RVec<int> mask(p.size(),0);
+ for(size_t i=0;i<p.size();++i) mask[i]=p[i]>20 && std::abs(e.at(i))<2.4 && g.at(i) && t.at(i) && m.at(i) && std::abs(z.at(i))<.1 && std::abs(x.at(i))<.05 && std::abs(s.at(i))<8 && iso.at(i)<.4;
+ return mask;},{pt,eta,global,tracker,medium,dz,dxy,sip,mini});
+}
+inline ROOT::RDF::RNode ExtraVHttHMuons(ROOT::RDF::RNode df,const std::string& out,
+ const std::string& mask,const std::string& pair){
+ return df.Define(out,[](const ROOT::RVec<int>& m,const ROOT::RVec<int>& p){
+ int n=0;for(size_t i=0;i<m.size();++i) if(m[i] && std::find(p.begin(),p.end(),int(i))==p.end()) ++n;
+ return n;},{mask,pair});
+}
+
 // Additional low-pT requirements; medium ID and loose isolation remain upstream.
 inline ROOT::RDF::RNode LowPtMuonTightMask(ROOT::RDF::RNode df,
  const std::string &out, const std::string &pt, const std::string &tight,
